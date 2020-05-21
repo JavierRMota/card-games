@@ -1,28 +1,37 @@
-const Player=require('../models/blackjack-player-model')
+const Player = require('../models/blackjack-player-model')
 const BlackJack = require('../models/blackjack-model')
-const getNewHand = (blackjack) => {
+
+const getNewHand = async (blackjack) => {
     const cardOneIndex = Math.floor(Math.random() * blackjack.cards.length);
     const cardOne = blackjack.cards[cardOneIndex]
-    blackjack.cards.splice(cardOneIndex,1)
+    blackjack.cards.splice(cardOneIndex, 1)
     const cardTwoIndex = Math.floor(Math.random() * blackjack.cards.length);
     const cardTwo = blackjack.cards[cardTwoIndex]
-    blackjack.cards.splice(cardTwoIndex,1)
+    blackjack.cards.splice(cardTwoIndex, 1)
     await blackjack.save()
-    return [cardOne,cardTwo]
+    return [cardOne, cardTwo]
 }
 const getPlayer = (blackjack, name) => {
     let index = 0
     blackjack.players.forEach(player => {
-        if (player.name  === name) {
+        if (player.name === name) {
             return { index, player }
         }
-        index ++
+        index++
     });
-    return { index: -1, player: null}
+    return { index: -1, player: null }
 }
 
-exports.postCreateGame = async (req,res) => {
-    const { body: { code }} = req
+exports.test = (req, res) => {
+    console.log('Route test called.');
+    try {
+        res.end(JSON.stringify('Routes are working.'))
+    } catch (err) {
+        res.status(409).json({ error: err })
+    }
+}
+exports.postCreateGame = async (req, res) => {
+    const { body: { code } } = req
     try {
         const blackjack = new BlackJack({ _id: code })
         await blackjack.save()
@@ -32,15 +41,15 @@ exports.postCreateGame = async (req,res) => {
     }
 }
 exports.putAddPlayer = async (req, res) => {
-    const { body: { code, name }} = req
+    const { body: { code, name } } = req
     try {
         const blackjack = await BlackJack.findOne({ _id: code });
         blackjack.players.forEach(oldPlayer => {
-            if (oldPlayer.name  === name) {
+            if (oldPlayer.name === name) {
                 throw Error('Player exists')
             }
         });
-        const player = new Player(getNewHand(blackjack),name)
+        const player = new Player(getNewHand(blackjack), name)
         blackjack.players.push(player)
         await blackjack.save()
         res.status(200).json({ code: blackjack.code, player })
@@ -49,7 +58,7 @@ exports.putAddPlayer = async (req, res) => {
     }
 }
 exports.putGetCard = async (req, res) => {
-    const { body: { code, name }} = req
+    const { body: { code, name } } = req
     try {
         const blackjack = await BlackJack.findOne({ _id: code });
         const { index, player } = getPlayer(blackjack, name)
@@ -61,7 +70,7 @@ exports.putGetCard = async (req, res) => {
         }
         const cardIndex = Math.floor(Math.random() * blackjack.cards.length);
         const card = blackjack.cards[cardIndex]
-        blackjack.cards.splice(cardIndex,1)
+        blackjack.cards.splice(cardIndex, 1)
         player.hand.push(card)
         player.points += (card % 13) + 1 > 10 ? (card % 13) + 1 : 10
         if (player.points > 21) {

@@ -1,9 +1,9 @@
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
 
 const blackjackSchema = new mongoose.Schema({
     _id: String,
-    cards:{
-        type:[Number],
+    cards: {
+        type: [Number],
         default: Array(52).fill().map((_, idx) => idx)
     },
     players: [{
@@ -14,11 +14,11 @@ const blackjackSchema = new mongoose.Schema({
         ready: Boolean,
         points: Number,
     }],
-    house:{
+    house: {
         hand: [Number],
         points: Number,
     },
     state: String,
 });
 
-module.exports= mongoose.model('BlackJack', blackjackSchema);
+module.exports = mongoose.model('BlackJack', blackjackSchema);
