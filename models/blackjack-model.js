@@ -4,14 +4,21 @@ const blackjackSchema = new mongoose.Schema({
     _id: String,
     cards:{
         type:[Number],
-        default: Array(52).fill().map((_, idx) => 1 + idx)
+        default: Array(52).fill().map((_, idx) => idx)
     },
-    players: [Schema.Types.Mixed],
+    players: [{
+        hand: [Number],
+        name: String,
+        lose: Boolean,
+        win: Boolean,
+        ready: Boolean,
+        points: Number,
+    }],
     house:{
-        hand: {
-          type:[Number]
-        }
-    }
+        hand: [Number],
+        points: Number,
+    },
+    state: String,
 });
 
 module.exports= mongoose.model('BlackJack', blackjackSchema);
