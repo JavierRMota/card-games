@@ -4,6 +4,9 @@ module.exports = class Player {
         this.name = name
         this.lose = false
         this.win = false
+        this.ready = false
+        this.wins = 0
+        this.loses = 0
         this.points = this.hand[0] % 13
     }
 }

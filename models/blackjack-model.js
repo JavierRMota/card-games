@@ -13,6 +13,8 @@ const blackjackSchema = new mongoose.Schema({
         win: Boolean,
         ready: Boolean,
         points: Number,
+        wins: Number,
+        loses: Number,
     }],
     house: {
         hand: [Number],
