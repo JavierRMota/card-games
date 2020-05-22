@@ -6,19 +6,24 @@ const blackjackSchema = new mongoose.Schema({
         type: [Number],
         default: Array(52).fill().map((_, idx) => idx)
     },
-    players: [{
-        hand: [Number],
-        name: String,
-        lose: Boolean,
-        win: Boolean,
-        ready: Boolean,
-        points: Number,
-        wins: Number,
-        loses: Number,
-    }],
+    players: {
+        type: [{
+            hand: [Number],
+            name: String,
+            lose: Boolean,
+            win: Boolean,
+            ready: Boolean,
+            points: Number,
+            wins: Number,
+            loses: Number,
+        }],
+        default: []
+    },
     house: {
         hand: [Number],
         points: Number,
+        lose: Boolean,
+        win: Boolean,
     },
     state: {
         type: String,
