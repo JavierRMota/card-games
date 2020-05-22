@@ -114,10 +114,14 @@ exports.test = (req, res) => {
     }
 }
 exports.postCreateGame = async (req, res) => {
-    const { body: { name } } = req
+    const { body: { name, decks } } = req
     try {
         const code = await genCode()
         const blackjack = new BlackJack({ _id: code })
+        if (decks && decks != 1) {
+            blackjack.decks = decks
+            blackjack.cards =  Array(52 * decks).fill().map((_, idx) => idx % 53)
+        }
         const player = new Player(await getNewHand(blackjack), name)
         blackjack.players.push(player)
         const house = await createHouse(blackjack)

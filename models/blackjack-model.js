@@ -6,6 +6,10 @@ const blackjackSchema = new mongoose.Schema({
         type: [Number],
         default: Array(52).fill().map((_, idx) => idx)
     },
+    decks: {
+        type: Number,
+        default: 1,
+    },
     players: {
         type: [{
             hand: [Number],
