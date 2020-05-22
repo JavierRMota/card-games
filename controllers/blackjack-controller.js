@@ -1,6 +1,8 @@
 const Player = require('../models/blackjack-player-model')
 const BlackJack = require('../models/blackjack-model')
-
+const updateGame = (blackjack) => {
+    //PROXY FUNCTION TO CALL AFTER EVERY UPDATE
+}
 const getNewHand = async (blackjack) => {
     const cardOneIndex = Math.floor(Math.random() * blackjack.cards.length);
     const cardOne = blackjack.cards[cardOneIndex]
