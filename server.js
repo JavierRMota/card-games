@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const routes = require('./routes/blackjack-routes');
 const errorController = require('./controllers/error-controller').errorController;
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
+const PORT_SOCKET =  8082
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
