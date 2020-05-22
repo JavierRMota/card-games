@@ -20,7 +20,10 @@ const blackjackSchema = new mongoose.Schema({
         hand: [Number],
         points: Number,
     },
-    state: String,
+    state: {
+        type: String,
+        default: 'PLAYING'
+    },
 });
 
 module.exports = mongoose.model('BlackJack', blackjackSchema);
