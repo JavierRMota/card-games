@@ -6,7 +6,7 @@ const updateGame = (blackjack) => {
 const getBestScore = (hand) => {
     const points = [0]
     hand.forEach(card => {
-        const value = (this.hand[0] % 13) + 1 > 10 ? 10 : (this.hand[0] % 13) + 1
+        const value = (card % 13) + 1 > 10 ? 10 : (card % 13) + 1
         if (value === 1) {
             points.push(...points)
             let index = 0
