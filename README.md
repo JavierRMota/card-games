@@ -3,8 +3,8 @@
 ### Authors
 
 * José Javier **Rodríguez Mota** - *A01372812*
-* Raúl Alejandro **Fuentes** -
-* Sonia Leilani **Ramos** -
+* Raúl Alejandro **Fuentes** - *A01379695*
+* Sonia Leilani **Ramos** - *A1378843*
 
 ### Dependencies
 

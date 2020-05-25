@@ -64,6 +64,14 @@ const calculateScores = async (blackjack) => {
     await blackjack.save()
     updateGame(blackjack)
 }
+
+const checkAllReady = async (blackjack) =>  {
+    let allready = true
+    blackjack.players.forEach(player => {
+        allready = allready & player.ready
+    });
+    return allready;
+}
 const getNewHand = async (blackjack) => {
     const cardOneIndex = Math.floor(Math.random() * blackjack.cards.length);
     const cardOne = blackjack.cards[cardOneIndex]
@@ -93,6 +101,7 @@ const getPlayer = (blackjack, name) => {
     });
     return { index: -1, player: null }
 }
+/** Generates a random code Example. 'B8A6S' */
 const genCode = async () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charactersLength = characters.length;
@@ -105,6 +114,7 @@ const genCode = async () => {
     } while (await BlackJack.exists({ _id: result }))
     return result;
 }
+/** Test if module is working correctly. */
 exports.test = (req, res) => {
     console.log('Route test called.');
     try {
@@ -113,6 +123,7 @@ exports.test = (req, res) => {
         res.status(409).json({ error: err })
     }
 }
+/** Creates a game using a player name and a deck. */
 exports.postCreateGame = async (req, res) => {
     const { body: { name, decks } } = req
     try {
@@ -133,6 +144,7 @@ exports.postCreateGame = async (req, res) => {
         res.status(409).json({ error: err })
     }
 }
+/** Adds a player to a game by receiving GameCode and Name of Player*/
 exports.putAddPlayer = async (req, res) => {
     const { body: { code, name } } = req
     try {
@@ -151,6 +163,7 @@ exports.putAddPlayer = async (req, res) => {
         res.status(409).json({ error: err })
     }
 }
+/** Gives a player a card from the cards in the current game and updates his points.*/
 exports.putGetCard = async (req, res) => {
     const { body: { code, name } } = req
     try {
@@ -164,7 +177,7 @@ exports.putGetCard = async (req, res) => {
         }
         const cardIndex = Math.floor(Math.random() * blackjack.cards.length);
         const card = blackjack.cards[cardIndex]
-        blackjack.cards.splice(cardIndex, 1)
+        blackjack.cards.splice(cardIndex, 1)  
         player.hand.push(card)
         player.points += (card % 13) + 1 > 10 ? 10 : (card % 13) + 1 
         if (player.points > 21) {
@@ -178,5 +191,26 @@ exports.putGetCard = async (req, res) => {
         res.status(200).send({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
     } catch (err) {
         res.status(409).json({ error: err })
+    }
+}
+//** Sets a player status as ready by receiving his Gamecode and name */
+exports.putsPlayerReady = async (req, res) => {
+    const { body: {code, name} } = req
+    try {
+        const blackjack = await BlackJack.findOne({ _id: code });
+        const { index, player } = getPlayer(blackjack, name)
+        if (index === -1) {
+            throw Error('Player does not exists')
+        }
+        player.ready = true
+        await blackjack.save()
+        if(checkAllReady(blackjack)){
+            calculateScores()
+        }
+        res.status(200).send({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
+        
+    } catch (err) {
+        res.status(409).json({ error: err })
+  
     }
 }
