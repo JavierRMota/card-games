@@ -91,10 +91,10 @@ const createHouse = async (blackjack) => {
     house.points = points
     return house
 }
-const getPlayer = (blackjack, name) => {
+const getPlayer = (blackjack, id) => {
     let index = 0
     blackjack.players.forEach(player => {
-        if (player.name === name) {
+        if (player._id === id) {
             return { index, player }
         }
         index++
@@ -120,7 +120,8 @@ exports.test = (req, res) => {
     try {
         res.end(JSON.stringify('Routes are working.'))
     } catch (err) {
-        res.status(409).json({ error: err })
+        console.log(err)
+        res.status(409).json({ error: err.message })
     }
 }
 /** Creates a game using a player name and a deck. */
@@ -139,16 +140,17 @@ exports.postCreateGame = async (req, res) => {
         blackjack.house = house
         await blackjack.save()
         updateGame(blackjack)
-        res.status(200).json({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
     } catch (err) {
-        res.status(409).json({ error: err })
+        console.log(err)
+        res.status(409).json({ error: err.message })
     }
 }
 /** Adds a player to a game by receiving GameCode and Name of Player*/
 exports.putAddPlayer = async (req, res) => {
     const { body: { code, name } } = req
     try {
-        const blackjack = await BlackJack.findOne({ _id: code });
+        const blackjack = await BlackJack.findById(code);
         blackjack.players.forEach(oldPlayer => {
             if (oldPlayer.name === name) {
                 throw Error('Player exists')
@@ -158,17 +160,18 @@ exports.putAddPlayer = async (req, res) => {
         blackjack.players.push(player)
         await blackjack.save()
         updateGame(blackjack)
-        res.status(200).json({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, id: player._id, players: blackjack.players, house: blackjack.house })
     } catch (err) {
-        res.status(409).json({ error: err })
+        console.log(err)
+        res.status(409).json({ error: err.message })
     }
 }
 /** Gives a player a card from the cards in the current game and updates his points.*/
 exports.putGetCard = async (req, res) => {
-    const { body: { code, name } } = req
+    const { body: { code, id } } = req
     try {
-        const blackjack = await BlackJack.findOne({ _id: code });
-        const { index, player } = getPlayer(blackjack, name)
+        const blackjack = await BlackJack.findById(code);
+        const { index, player } = getPlayer(blackjack, id)
         if (index === -1) {
             throw Error('Player does not exists')
         }
@@ -188,17 +191,18 @@ exports.putGetCard = async (req, res) => {
         blackjack.players[index] = player
         await blackjack.save()
         updateGame(blackjack)
-        res.status(200).send({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
     } catch (err) {
-        res.status(409).json({ error: err })
+        console.log(err)
+        res.status(409).json({ error: err.stack })
     }
 }
 //** Sets a player status as ready by receiving his Gamecode and name */
 exports.putPlayerReady = async (req, res) => {
-    const { body: {code, name} } = req
+    const { body: {code, id} } = req
     try {
-        const blackjack = await BlackJack.findOne({ _id: code });
-        const { index, player } = getPlayer(blackjack, name)
+        const blackjack = await BlackJack.findById(code);
+        const { index, player } = getPlayer(blackjack, id)
         if (index === -1) {
             throw Error('Player does not exists')
         }
@@ -207,10 +211,11 @@ exports.putPlayerReady = async (req, res) => {
         if(checkAllReady(blackjack)){
             calculateScores()
         }
-        res.status(200).send({ code: blackjack.code, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
         
     } catch (err) {
-        res.status(409).json({ error: err })
+        console.log(err)
+        res.status(409).json({ error: err.message })
   
     }
 }
