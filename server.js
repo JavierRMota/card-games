@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8081;
 const PORT_SOCKET =  8082
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 routes(app);
 app.use(errorController);
 
