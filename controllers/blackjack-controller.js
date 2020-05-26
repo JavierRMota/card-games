@@ -85,8 +85,8 @@ const getNewHand = async (blackjack) => {
 const createHouse = async (blackjack) => {
     const house = {}
     const hand = await getNewHand(blackjack)
-    let points = (this.hand[0] % 13) + 1 > 10 ? 10 : (this.hand[0] % 13) + 1 
-    points += (this.hand[1] % 13) + 1 > 10 ? 10 : (this.hand[1] % 13) + 1 
+    let points = (hand[0] % 13) + 1 > 10 ? 10 : (hand[0] % 13) + 1 
+    points += (hand[1] % 13) + 1 > 10 ? 10 : (hand[1] % 13) + 1
     house.hand = hand
     house.points = points
     return house
