@@ -92,13 +92,12 @@ const createHouse = async (blackjack) => {
     return house
 }
 const getPlayer = (blackjack, id) => {
-    let index = 0
-    blackjack.players.forEach(player => {
-        if (player._id === id) {
-            return { index, player }
+    for (let i = 0; i < blackjack.players.length; i++) {
+        const player = blackjack.players[i]
+        if (player._id.toString() === id) {
+            return { index: i, player }
         }
-        index++
-    });
+    }
     return { index: -1, player: null }
 }
 /** Generates a random code Example. 'B8A6S' */
@@ -185,8 +184,10 @@ exports.putGetCard = async (req, res) => {
         player.points += (card % 13) + 1 > 10 ? 10 : (card % 13) + 1 
         if (player.points > 21) {
             player.lose = true
+            player.ready = true
         } else if (player.hand.length > 4) {
             player.win = true
+            player.ready = true
         }
         blackjack.players[index] = player
         await blackjack.save()
@@ -216,6 +217,5 @@ exports.putPlayerReady = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(409).json({ error: err.message })
-  
     }
 }
