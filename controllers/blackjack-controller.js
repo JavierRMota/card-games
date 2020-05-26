@@ -194,7 +194,7 @@ exports.putGetCard = async (req, res) => {
     }
 }
 //** Sets a player status as ready by receiving his Gamecode and name */
-exports.putsPlayerReady = async (req, res) => {
+exports.putPlayerReady = async (req, res) => {
     const { body: {code, name} } = req
     try {
         const blackjack = await BlackJack.findOne({ _id: code });
