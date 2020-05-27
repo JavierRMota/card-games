@@ -1,7 +1,8 @@
 const Player = require('../models/blackjack-player-model')
 const BlackJack = require('../models/blackjack-model')
+const Socket = require('./socket-controller')
 const updateGame = (blackjack) => {
-    //PROXY FUNCTION TO CALL AFTER EVERY UPDATE
+    Socket.update(blackjack);
 }
 const getBestScore = (hand) => {
     const points = [0]
@@ -211,6 +212,31 @@ exports.putPlayerReady = async (req, res) => {
         await blackjack.save()
         if(checkAllReady(blackjack)){
             calculateScores()
+        }
+        res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
+        
+    } catch (err) {
+        console.log(err)
+        res.status(409).json({ error: err.message })
+    }
+}
+
+// TODO: Implement routes
+exports.deletePlayer = async (req,res) => {
+    try {
+        const blackjack = await BlackJack.findById(code);
+        const { index } = getPlayer(blackjack, id)
+        if (index === -1) {
+            throw Error('Player does not exists')
+        }
+        blackjack.players.splice(index,1);
+        if (blackjack.players.length === 0) {
+            Socket.finish(blackjack);
+            await blackjack.remove();
+        } else {
+            Socket.remove(code, id);
+            await blackjack.save();
+            updateGame(blackjack);
         }
         res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
         
