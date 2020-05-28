@@ -4,8 +4,21 @@ const Socket = require('./socket-controller')
 const updateGame = (blackjack) => {
     Socket.update(blackjack);
 }
+const makeHousePlay = async (blackjack) => {
+    while (blackjack.house.points < 16) {
+        const cardIndex = Math.floor(Math.random() * blackjack.cards.length);
+        const card = blackjack.cards[cardIndex];
+        blackjack.cards.splice(cardIndex, 1);
+        blackjack.house.hand.push(card);
+        blackjack.house.points = getBestScore(blackjack.house.hand);
+        updateGame(blackjack);
+        await blackjack.save();
+    }
+    await calculateScores(blackjack);
+}
 const getBestScore = (hand) => {
     const points = [0]
+    const fileterdPoints = []
     hand.forEach(card => {
         const value = (card % 13) + 1 > 10 ? 10 : (card % 13) + 1
         if (value === 1) {
@@ -19,17 +32,16 @@ const getBestScore = (hand) => {
                 }
                 index ++
             })
-            points.filter(point => point <= 21)
         } else {
             let index = 0
             points.forEach(point => {
                 points[index] += value
                 index ++
             })
-            points.filter(point => point <= 21)
         }
     })
-    return Math.max(...points)
+    fileterdPoints = points.filter(point => point <= 21)
+    return fileterdPoints.length > 0 ? Math.max(...fileterdPoints) : Math.min(...points)
 }
 const calculateScores = async (blackjack) => {
     blackjack.state = 'SCORES'
@@ -62,8 +74,8 @@ const calculateScores = async (blackjack) => {
             }
         })
     }
-    await blackjack.save()
-    updateGame(blackjack)
+    updateGame(blackjack);
+    await blackjack.save();
 }
 
 const checkAllReady = async (blackjack) =>  {
@@ -86,10 +98,8 @@ const getNewHand = async (blackjack) => {
 const createHouse = async (blackjack) => {
     const house = {}
     const hand = await getNewHand(blackjack)
-    let points = (hand[0] % 13) + 1 > 10 ? 10 : (hand[0] % 13) + 1 
-    points += (hand[1] % 13) + 1 > 10 ? 10 : (hand[1] % 13) + 1
     house.hand = hand
-    house.points = points
+    house.points = getBestScore(hand)
     return house
 }
 const getPlayer = (blackjack, id) => {
@@ -182,7 +192,7 @@ exports.putGetCard = async (req, res) => {
         const card = blackjack.cards[cardIndex]
         blackjack.cards.splice(cardIndex, 1)  
         player.hand.push(card)
-        player.points += (card % 13) + 1 > 10 ? 10 : (card % 13) + 1 
+        player.points = getBestScore(player.hand)
         if (player.points > 21) {
             player.lose = true
             player.ready = true
@@ -211,7 +221,7 @@ exports.putPlayerReady = async (req, res) => {
         player.ready = true
         await blackjack.save()
         if(checkAllReady(blackjack)){
-            calculateScores()
+           await makeHousePlay(blackjack)
         }
         res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
         
