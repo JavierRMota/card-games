@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
 
 const Game = props => {
-  const data = props.location.state
-
+  const { user, code, player } = props.location.state
+  console.log(player)
   return <Fragment>
-      <h1>Username: {data.username}</h1>
-      {data.gamecode ? <h1>GameCode: {data.gamecode}</h1> : <p>No hay gamecode</p>}
+      <h1>Username: {user}</h1>
+      <h1>GameCode: {code}</h1>
   </Fragment>
 }
 
