@@ -1,6 +1,6 @@
 net = require('net')
 
-class Socket {
+class BlackJackSocket {
     sockets = []
     constructor() {
         this.server = net.createServer((socket) => {
@@ -35,7 +35,7 @@ class Socket {
         this.sockets = this.sockets.filter(({ code, player}) => code !== blackjack._id)
     }
     update(blackjack) {
-        const socketsToNotif = sockets.filter(({ code }) => code === blackjack._id);
+        const socketsToNotif = this.sockets.filter(({ code }) => code === blackjack._id);
         socketsToNotif.forEach(socket => {
             socket.write(JSON.Stringify({
                 players: blackjack.players,
@@ -49,6 +49,5 @@ class Socket {
     }
 
 }
-
-const socket = new Socket();
-module.export = socket;
+const socket = new BlackJackSocket();
+module.exports = socket;

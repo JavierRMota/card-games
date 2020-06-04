@@ -1,8 +1,8 @@
 const Player = require('../models/blackjack-player-model')
 const BlackJack = require('../models/blackjack-model')
-const Socket = require('./socket-controller')
+const SOCKET =  require('../controllers/socket-controller')
 const updateGame = (blackjack) => {
-    Socket.update(blackjack);
+    SOCKET.update(blackjack);
 }
 const makeHousePlay = async (blackjack) => {
     while (blackjack.house.points < 16) {
@@ -18,7 +18,7 @@ const makeHousePlay = async (blackjack) => {
 }
 const getBestScore = (hand) => {
     const points = [0]
-    const fileterdPoints = []
+    let fileterdPoints = []
     hand.forEach(card => {
         const value = (card % 13) + 1 > 10 ? 10 : (card % 13) + 1
         if (value === 1) {
@@ -45,14 +45,15 @@ const getBestScore = (hand) => {
 }
 const calculateScores = async (blackjack) => {
     blackjack.state = 'SCORES'
-    if (blackjack.hand.lose) {
+    const players = blackjack.players
+    if (blackjack.house.lose) {
         players.forEach(player => {
             if (!player.lose) {
                 player.win = true
                 player.wins += 1
             }
         })
-    } else if (blackjack.hand.win) {
+    } else if (blackjack.house.win) {
         players.forEach(player => {
             if (!player.lose) {
                 player.lose = true
@@ -74,6 +75,7 @@ const calculateScores = async (blackjack) => {
             }
         })
     }
+    blackjack.players = players;
     updateGame(blackjack);
     await blackjack.save();
 }
@@ -150,7 +152,7 @@ exports.postCreateGame = async (req, res) => {
         blackjack.house = house
         await blackjack.save()
         updateGame(blackjack)
-        res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, player, players: blackjack.players, house: blackjack.house })
     } catch (err) {
         console.log(err)
         res.status(409).json({ error: err.message })
@@ -170,7 +172,7 @@ exports.putAddPlayer = async (req, res) => {
         blackjack.players.push(player)
         await blackjack.save()
         updateGame(blackjack)
-        res.status(200).json({ code: blackjack._id, id: player._id, players: blackjack.players, house: blackjack.house })
+        res.status(200).json({ code: blackjack._id, player, players: blackjack.players, house: blackjack.house })
     } catch (err) {
         console.log(err)
         res.status(409).json({ error: err.message })
