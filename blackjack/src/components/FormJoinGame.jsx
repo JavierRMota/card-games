@@ -1,31 +1,32 @@
 import React, { useState } from 'react'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios'
 
 const FormJoinGame = () => {
   const history = useHistory()
-  const [data, updateData] = useState({
-    username: '',
-    gamecode: ''
-  })
 
-  const handleChange = e => {
-    updateData({
-      ...data,
-      [e.target.name]: e.target.value
-    })
-  }
+  const [user, updateUser] = useState('')
+  const [code, updateCode] = useState('')
 
-  const { username, gamecode } = data
-
-  const JoinGame = () => {
+  const joinGame = async () => {
     //TODO
-    console.log('Joining game')
-    history.push({
-      pathname: '/game',
-      state: { username: username, gamecode: gamecode }
-    })
+    try {
+      console.log('Creating game')
+      const response = await axios.put('http://localhost:8081/game/addPlayer',{
+        name: user,
+        code
+      })
+      const { player, code: gameCode } = response.data
+      history.push({
+        pathname: '/game',
+        state: { user: player.name, code: gameCode, player }
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
+
   return (
     <Form>
       <FormGroup>
@@ -35,8 +36,8 @@ const FormJoinGame = () => {
           name='username'
           id='username'
           placeholder='Username'
-          onChange={handleChange}
-          value={username}
+          onChange={(e) => updateUser(e.target.value)}
+          value={user}
         ></Input>
       </FormGroup>
       <FormGroup>
@@ -46,12 +47,12 @@ const FormJoinGame = () => {
           name='gamecode'
           id='gamecode'
           placeholder='Game Code'
-          onChange={handleChange}
-          value={gamecode}
+          onChange={(e) => updateCode(e.target.value)}
+          value={code}
         ></Input>
       </FormGroup>
-      <Button color='primary' onClick={JoinGame}>
-        Create
+      <Button color='primary' onClick={joinGame}>
+        Join
       </Button>
     </Form>
   )
