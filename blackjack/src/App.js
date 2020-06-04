@@ -1,19 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Fragment } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import Card from './components/card'
+import NavbarC from './components/Navbar';
+import Home from "./components/Home";
+import Widgets from "./components/Widgets";
+import Credits from './components/Credits';
+import Game from './components/Game';
 
-function App() {
+const widgetprods = [
+  { name: 'Master Widget', price: '$125.00' },
+  { name: 'Sub Widget', price: '$115.00' },
+  { name: 'Long Widget', price: '$150.00' },
+  { name: 'Short Widget', price: '$135.00' }
+]
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
+    <Router>
+      <div className='App'>
+        <NavbarC title={'Wakanda'} />
+        <div className='container'>
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/credits' component={Credits} />
+            <Route exact path='/game' component={Game} />
+  
+            <Route
+              exact
+              path='/widgets'
+              render={(props) =>
+                <Fragment>
 
-      </header>
-      <Card number={10} hidden={false} owner={true} />
-      <Card number={50} hidden={true} owner={true} />
-      <Card number={20} hidden={false} owner={true} />
-    </div>
-  );
-}
+                  <Widgets prods={widgetprods} />
 
+                </Fragment>
+              }
+            />
+          </Switch>
+        </div>
+      </div>
+    </Router>
+  )
+};
 export default App;
