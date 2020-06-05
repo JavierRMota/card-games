@@ -1,30 +1,46 @@
-net = require('net')
 
 class BlackJackSocket {
     sockets = []
     constructor() {
-        this.server = net.createServer((socket) => {
+        this.server = require('http').createServer();
+        this.io = require('socket.io')(this.server);
+        this.io.on('connection', client => {
+            client.index = this.sockets.length;
+            this.sockets.push(client);
+            client.emit('connectAPI',{})
+            client.on('connected', (data) => { 
+                const { code, player } = data;
+                console.log(data)
+                client.code = code;
+                client.player = player
+            });
+            client.on('disconnect', () => { 
+                this.sockets.splice(client.index,1);
+            });
+        });
+       /* this.server = net.createServer((socket) => {
             socket.name = socket.remoteAddress+':'+socket.remotePort
             console.log('Connection from',socket.name)
-            socket.write('Conectado\n')
-            const length = sockets.length;
+            socket.emit('connected','Conectado\n')
+            const length = this.sockets.length;
             socket.index = length;
-            sockets.push(socket);
-            socket.on('data', (data) => {
-                const info = String(data).split('-');
-                if (info.length !==  2) {
-                  this.sockets.splice(socket.index,1)
-                  socket.end();
+            this.sockets.push(socket);
+            socket.on('connect', (data) => {
+                console.log(data)
+                const {code, player} = data
+                if (!code || !player ) {
+                   // this.sockets.splice(socket.index,1)
+                   // socket.end();
                 } else {
-                  socket.code = info[0];
-                  socket.player = info[1]
+                    socket.code = code;
+                    socket.player = player;
                 }
             })
             socket.on('end', () => {
               console.log(socket.name, 'disconnected');
             })
-        })
-        this.server.listen(8082,'localhost');
+        })*/
+        this.server.listen(8082);
         console.log('Socket listening on port 8082')
     }
     finish(blackjack) {
@@ -37,11 +53,11 @@ class BlackJackSocket {
     update(blackjack) {
         const socketsToNotif = this.sockets.filter(({ code }) => code === blackjack._id);
         socketsToNotif.forEach(socket => {
-            socket.write(JSON.Stringify({
+            socket.emit('update',{
                 players: blackjack.players,
                 house: blackjack.house,
                 code: blackjack._id
-             }));
+             });
         });
     }
     remove(_id,id) {

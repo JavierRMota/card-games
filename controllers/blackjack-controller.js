@@ -146,11 +146,12 @@ exports.postCreateGame = async (req, res) => {
             blackjack.decks = decks
             blackjack.cards =  Array(52 * decks).fill().map((_, idx) => idx % 53)
         }
-        const player = new Player(await getNewHand(blackjack), name)
+        let player = new Player(await getNewHand(blackjack), name)
         blackjack.players.push(player)
         const house = await createHouse(blackjack)
         blackjack.house = house
         await blackjack.save()
+        player = blackjack.players[blackjack.players.length - 1]
         updateGame(blackjack)
         res.status(200).json({ code: blackjack._id, player, players: blackjack.players, house: blackjack.house })
     } catch (err) {
@@ -168,9 +169,10 @@ exports.putAddPlayer = async (req, res) => {
                 throw Error('Player exists')
             }
         });
-        const player = new Player(await getNewHand(blackjack), name)
+        let player = new Player(await getNewHand(blackjack), name)
         blackjack.players.push(player)
         await blackjack.save()
+        player = blackjack.players[blackjack.players.length - 1]
         updateGame(blackjack)
         res.status(200).json({ code: blackjack._id, player, players: blackjack.players, house: blackjack.house })
     } catch (err) {
