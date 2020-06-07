@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Card from 'react-bootstrap/Card'
+import {
+    Card, CardImg,CardImgOverlay,
+    CardTitle, Button
+  } from 'reactstrap';
 import pica from '../assets/pica.png'
 import diamante from '../assets/diamante.png'
 import trebol  from '../assets/trebol.png'
@@ -33,12 +36,12 @@ const DeckCard = ({ number, hidden, owner }) => {
             image = back;
     }
     return (
-        <div onClick={() => owner && setHidden(!isHidden)}>
-            <Card  className="text-black"  style={{ width: '18rem', height: 'auto' }}>
-                <Card.Img src={image} alt={`card ${VALUES[value]}`} />
-                <Card.ImgOverlay>
-                    <Card.Title >{isHidden ? '' :  VALUES[value]}</Card.Title>
-                </Card.ImgOverlay>
+        <div onClick={() => owner && setHidden(!isHidden)} style={{position: 'relative', left:'30px'}}>
+            <Card className="text-black"  style={{ width: '18rem', height: 'auto',  }}>
+                <CardImg src={image} alt={`card ${VALUES[value]}`} />
+                <CardImgOverlay>
+                    <CardTitle >{isHidden ? '' :  VALUES[value]}</CardTitle>
+                </CardImgOverlay>
             </Card>
         </div>
     );
