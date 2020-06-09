@@ -208,6 +208,9 @@ exports.putGetCard = async (req, res) => {
         await blackjack.save()
         updateGame(blackjack)
         res.status(200).json({ code: blackjack._id, players: blackjack.players, house: blackjack.house })
+        if(checkAllReady(blackjack)){
+            await makeHousePlay(blackjack)
+        }
     } catch (err) {
         console.log(err)
         res.status(409).json({ error: err.stack })

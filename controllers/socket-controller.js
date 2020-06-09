@@ -56,7 +56,8 @@ class BlackJackSocket {
             socket.emit('update',{
                 players: blackjack.players,
                 house: blackjack.house,
-                code: blackjack._id
+                code: blackjack._id,
+                state: blackjack.state
              });
         });
     }
