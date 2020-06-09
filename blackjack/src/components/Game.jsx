@@ -14,12 +14,14 @@ import {
 import CarouselGames from './Carousel'
 
 const Game = props => {
-  const { user, code, player } = props.location.state
+  const { user, code, player, initHouse, initPlayers } = props.location.state
+  const [players, setPlayers] = useState(initPlayers)
+  const [house, setHouse] = useState(initHouse)
   useEffect(() => {
     const socket = socketIOClient('http://localhost:8082')
     socket.on('update', data => {
-      // TODO: Implement update
-      console.log(data)
+      setPlayers(data.players)
+      setHouse(data.house)
     })
     socket.on('connectAPI', data => {
       console.log('connected')
@@ -27,105 +29,35 @@ const Game = props => {
     })
   }, [])
 
-  console.log(player)
-
-  var { hand, name } = player
   let players_games = []
   let wins = 23;
   let looses = 2;
   
 
 
-  var create_player_games = name => {
+  const create_player_games = name => {
     
-    //DELETE THIS WHEN IMPLEMENTED BACKENDLOGIC
-    var players = [
-      {
-        hand: [37, 41,30, 41,30,],
-        _id: '5edd43fd9ff7662300eb4ed4',
-        name: 'Test1',
-        lose: false,
-        win: false,
-        ready: false,
-        wins: 0
-      },
-      {
-        hand: [22, 49],
-        _id: '5edd43fd9ff7662300eb4ed5',
-        name: 'Wakanda',
-        lose: false,
-        win: false,
-        ready: false,
-        wins: 0
-      },{
-        hand: [22, 49],
-        _id: '5edd43fd9ff7662300eb4ed5',
-        name: 'Firulais',
-        lose: false,
-        win: false,
-        ready: false,
-        wins: 0
-      },
-      {
-        hand: [22, 49],
-        _id: '5edd43fd9ff7662300eb4ed5',
-        name: 'Firulais',
-        lose: false,
-        win: false,
-        ready: false,
-        wins: 0
-      },
-      {
-        hand: [22, 49],
-        _id: '5edd43fd9ff7662300eb4ed5',
-        name: 'Firulais',
-        lose: false,
-        win: false,
-        ready: false,
-        wins: 0
-      },
-      
-      
-    ]
-
-    console.log(players)
-    for (const play in players) {
-      if (players.hasOwnProperty(play)) {
-        const element = players[play]
-        if (element.name === user) {
-          console.log(element.name)
-          players_games.push(
-            <CardGame
-              hand={element.hand}
-              owner={element.name}
-              isfromOwner={true}
-            ></CardGame>
-          )
-        } else {
-          players_games.push(
-            <CardGame
-              hand={element.hand}
-              owner={element.name}
-            ></CardGame>
-          )
-        }
+    for (const i in players) {
+      const play = players[i]
+      if (play._id == player._id) {
+        players_games.push(
+          <CardGame
+            hand={play.hand}
+            owner={play.name}
+            isfromOwner={true}
+          ></CardGame>
+        )
+      } else {
+        players_games.push(
+          <CardGame
+            hand={play.hand}
+            owner={play.name}
+            isfromOwner={false}
+          ></CardGame>
+        )
       }
     }
-    return
   }
-
-
-  //DELETE THIS WHEN IMPLEMENTED BACKENDLOGIC
-  let house = {
-    hand: [22, 11, 1],
-    _id: '5edd43fd9ff7662300eb4ed5',
-    name: 'Wakanda',
-    lose: false,
-    win: false,
-    ready: false,
-    wins: 0
-  }
-
 
 
   //Carousel

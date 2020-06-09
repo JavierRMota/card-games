@@ -20,7 +20,7 @@ const CardGame = ({ hand, isfromOwner=false, owner=null, isfromHouse=false }) =>
 
   for (let index = 0; index < hand.length; index++) {
     player_cards.push(
-      <CardDeck number={hand[index]} owner={owner} hidden={false} style={styles[index]}></CardDeck>
+      <CardDeck number={hand[index]} owner={isfromOwner} hidden={index == 0} style={styles[index]}></CardDeck>
     )
   }
   let headers;

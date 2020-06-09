@@ -17,10 +17,10 @@ const FormCreateGame = () => {
         name: user,
         decks
       })
-      const { player, code } = response.data
+      const { player, code, house, players } = response.data
       history.push({
         pathname: '/game',
-        state: { user: player.name, code, player }
+        state: { user: player.name, code, player, initHouse: house, initPlayers: players }
       })
     } catch (error) {
       console.log(error)
