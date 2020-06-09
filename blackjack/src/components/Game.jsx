@@ -12,6 +12,7 @@ import {
   Col
 } from 'reactstrap'
 import CarouselGames from './Carousel'
+import axios from 'axios'
 
 const Game = props => {
   const { user, code, player: initPlayer, initHouse, initPlayers } = props.location.state
@@ -23,9 +24,10 @@ const Game = props => {
     socket.on('update', data => {
       setPlayers(data.players)
       setHouse(data.house)
+      console.log(data)
       players.forEach(play => {
         if (play._id == player._id) {
-          setPlayer(data.player)
+          setPlayer(play)
         }
       });
     })
@@ -35,14 +37,13 @@ const Game = props => {
     })
   }, [])
 
-  let players_games = []
   const wins = player.wins;
   const looses = player.loses;
   
 
+  const players_games = []
 
   const create_player_games = name => {
-    
     for (const i in players) {
       const play = players[i]
       if (play._id == player._id) {
@@ -51,6 +52,18 @@ const Game = props => {
             hand={play.hand}
             owner={play.name}
             isfromOwner={true}
+            putReady={async ()=>{
+              const response = await axios.put('http://localhost:8081/game/putPlayerReady',{
+                code,
+                id: player._id
+              })
+            }}
+            newCard={async ()=>{
+              const response = await axios.put('http://localhost:8081/game/getCard',{
+                code,
+                id: player._id
+              })
+            }}
           ></CardGame>
         )
       } else {
@@ -65,9 +78,9 @@ const Game = props => {
     }
   }
 
-
-  //Carousel
   create_player_games()
+  console.log(players_games)
+  //Carousel
 
   return (
     <Fragment>

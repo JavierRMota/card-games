@@ -10,7 +10,6 @@ import {
 const CarouselGames = ({ player_games}) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [animating, setAnimating] = useState(false)
-  console.log(player_games);
   let slides = [];
 
 

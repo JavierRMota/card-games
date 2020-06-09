@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col, Button, Card, CardBody ,CardTitle, Container} from 'reactstrap'
 import CardDeck from './Card'
 
-const CardGame = ({ hand, isfromOwner=false, owner=null, isfromHouse=false }) => {
+const CardGame = ({ hand, isfromOwner=false, owner=null, isfromHouse=false, newCard, putReady }) => {
   let player_cards = []
   var styles = []
   let width = 275;
@@ -34,8 +34,8 @@ const CardGame = ({ hand, isfromOwner=false, owner=null, isfromHouse=false }) =>
     buttons = (
       <Row>
         <Col className='mx-auto text-center'>
-          <Button color='primary' size="lg" block>Hit</Button>{' '}
-          <Button color='secondary' size="lg" block>Stand</Button>{' '}
+          <Button color='primary' size="lg" block onClick={newCard}>New Card</Button>{' '}
+          <Button color='secondary' size="lg" block onClick={putReady}>Stand</Button>{' '}
         </Col>
         
       </Row>
