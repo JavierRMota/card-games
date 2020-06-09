@@ -14,14 +14,20 @@ import {
 import CarouselGames from './Carousel'
 
 const Game = props => {
-  const { user, code, player, initHouse, initPlayers } = props.location.state
+  const { user, code, player: initPlayer, initHouse, initPlayers } = props.location.state
   const [players, setPlayers] = useState(initPlayers)
   const [house, setHouse] = useState(initHouse)
+  const [player, setPlayer] = useState(initPlayer)
   useEffect(() => {
     const socket = socketIOClient('http://localhost:8082')
     socket.on('update', data => {
       setPlayers(data.players)
       setHouse(data.house)
+      players.forEach(play => {
+        if (play._id == player._id) {
+          setPlayer(data.player)
+        }
+      });
     })
     socket.on('connectAPI', data => {
       console.log('connected')
@@ -30,8 +36,8 @@ const Game = props => {
   }, [])
 
   let players_games = []
-  let wins = 23;
-  let looses = 2;
+  const wins = player.wins;
+  const looses = player.loses;
   
 
 
