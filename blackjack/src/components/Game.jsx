@@ -8,8 +8,10 @@ import {
   CarouselControl,
   CarouselIndicators,
   CarouselCaption,
-  Row,Col
+  Row,
+  Col
 } from 'reactstrap'
+import CarouselGames from './Carousel'
 
 const Game = props => {
   const { user, code, player } = props.location.state
@@ -28,12 +30,18 @@ const Game = props => {
   console.log(player)
 
   var { hand, name } = player
-  var players_games = []
+  let players_games = []
+  let wins = 23;
+  let looses = 2;
+  
+
 
   var create_player_games = name => {
+    
+    //DELETE THIS WHEN IMPLEMENTED BACKENDLOGIC
     var players = [
       {
-        hand: [37, 41],
+        hand: [37, 41,30, 41,30,],
         _id: '5edd43fd9ff7662300eb4ed4',
         name: 'Test1',
         lose: false,
@@ -49,7 +57,35 @@ const Game = props => {
         win: false,
         ready: false,
         wins: 0
-      }
+      },{
+        hand: [22, 49],
+        _id: '5edd43fd9ff7662300eb4ed5',
+        name: 'Firulais',
+        lose: false,
+        win: false,
+        ready: false,
+        wins: 0
+      },
+      {
+        hand: [22, 49],
+        _id: '5edd43fd9ff7662300eb4ed5',
+        name: 'Firulais',
+        lose: false,
+        win: false,
+        ready: false,
+        wins: 0
+      },
+      {
+        hand: [22, 49],
+        _id: '5edd43fd9ff7662300eb4ed5',
+        name: 'Firulais',
+        lose: false,
+        win: false,
+        ready: false,
+        wins: 0
+      },
+      
+      
     ]
 
     console.log(players)
@@ -70,7 +106,6 @@ const Game = props => {
             <CardGame
               hand={element.hand}
               owner={element.name}
-              isfromOwner={false}
             ></CardGame>
           )
         }
@@ -79,54 +114,50 @@ const Game = props => {
     return
   }
 
+
+  //DELETE THIS WHEN IMPLEMENTED BACKENDLOGIC
+  let house = {
+    hand: [22, 11, 1],
+    _id: '5edd43fd9ff7662300eb4ed5',
+    name: 'Wakanda',
+    lose: false,
+    win: false,
+    ready: false,
+    wins: 0
+  }
+
+
+
   //Carousel
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [animating, setAnimating] = useState(false)
-
-  const next = () => {
-    if (animating) return
-    const nextIndex =
-      activeIndex === players_games.length - 1 ? 0 : activeIndex + 1
-    setActiveIndex(nextIndex)
-  }
-
-  const previous = () => {
-    if (animating) return
-    const nextIndex =
-      activeIndex === 0 ? players_games.length - 1 : activeIndex - 1
-    setActiveIndex(nextIndex)
-  }
-
-  const goToIndex = newIndex => {
-    if (animating) return
-    setActiveIndex(newIndex)
-  }
-
-  const slides = players_games.map(item => {
-    return (
-      <CarouselItem
-        onExiting={() => setAnimating(true)}
-        onExited={() => setAnimating(false)}
-        key={players_games.indexOf(item).toString()}
-      >
-        {item}
-        <CarouselCaption captionText='asdasdas' captionHeader='aasdasdasd' />
-      </CarouselItem>
-    )
-  })
-
   create_player_games()
+
   return (
     <Fragment>
-      <h1>Username: {user}</h1>
-      <h1>GameCode: {code}</h1>
-
       <Container>
-        <Row >
-        <Col className='mx-auto text-center'>
-          TODO HOUSE GAME
-          </Col></Row>
-        <Row>{players_games}</Row>
+        <Row>
+          <Col>
+            <h2>Username: {user}</h2>
+            <h2>GameCode: {code}</h2>
+          </Col>
+
+          <Col className='text-right'>
+            <h3>Wins: <span className='text-success'>{wins}</span></h3>
+            <h3>Looses: <span className='text-danger'>{looses}</span></h3>
+          </Col>
+        </Row>
+        <hr/>
+        <Row>
+          <Col className='col-md-auto'>
+          <CardGame
+              hand={house.hand}
+              isfromHouse={true}
+            ></CardGame>
+          </Col>
+          <Col className=' col-lg' > <CarouselGames player_games={players_games}></CarouselGames> </Col>
+    
+        </Row>
+        <br/>
+        <hr/>
       </Container>
     </Fragment>
   )

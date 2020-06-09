@@ -14,7 +14,7 @@ const DIAMANTE = 1;
 const TREBOL = 2;
 const CORAZON = 3;
 const VALUES = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-const DeckCard = ({ number, hidden, owner }) => {
+const DeckCard = ({ number, hidden, owner, style}) => {
     const [isHidden, setHidden] = useState(hidden);
     const deck = isHidden ? -1 : Math.floor((number % 52) / 13);
     const value = number % 13;
@@ -35,12 +35,13 @@ const DeckCard = ({ number, hidden, owner }) => {
         default:
             image = back;
     }
+   
     return (
-        <div onClick={() => owner && setHidden(!isHidden)} style={{position: 'relative', left:'30px'}}>
-            <Card className="text-black"  style={{ width: '18rem', height: 'auto',  }}>
-                <CardImg src={image} alt={`card ${VALUES[value]}`} />
+        <div onClick={() => owner && setHidden(!isHidden)} style={style}>
+            <Card className="text-black"  style={{ width: '17rem', height: 'auto',border: '.38rem solid black', borderRadius:'21px' }} despues de Card > 
+                <CardImg src={image} alt={`card ${VALUES[value]}`} style={{zIndex:0 }}/>
                 <CardImgOverlay>
-                    <CardTitle >{isHidden ? '' :  VALUES[value]}</CardTitle>
+                    <CardTitle ><h5>{isHidden ? '' :  VALUES[value]}</h5></CardTitle>
                 </CardImgOverlay>
             </Card>
         </div>
