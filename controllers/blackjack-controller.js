@@ -81,11 +81,8 @@ const calculateScores = async (blackjack) => {
 }
 
 const checkAllReady = async (blackjack) =>  {
-    let allready = true
-    blackjack.players.forEach(player => {
-        allready = allready & player.ready
-    });
-    return allready;
+    const filtered = blackjack.players.filter(({ ready }) => ready == false );
+    return filtered.length == 0;
 }
 const getNewHand = async (blackjack) => {
     const cardOneIndex = Math.floor(Math.random() * blackjack.cards.length);

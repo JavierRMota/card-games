@@ -3,11 +3,6 @@ import socketIOClient from 'socket.io-client'
 import { Container } from 'reactstrap'
 import CardGame from './CardGame'
 import {
-  Carousel,
-  CarouselItem,
-  CarouselControl,
-  CarouselIndicators,
-  CarouselCaption,
   Row,
   Col
 } from 'reactstrap'
@@ -26,7 +21,7 @@ const Game = props => {
       setHouse(data.house)
       console.log(data)
       players.forEach(play => {
-        if (play._id == player._id) {
+        if (play._id === player._id) {
           setPlayer(play)
         }
       });
@@ -46,20 +41,20 @@ const Game = props => {
   const create_player_games = name => {
     for (const i in players) {
       const play = players[i]
-      if (play._id == player._id) {
+      if (play._id === player._id) {
         players_games.push(
           <CardGame
             hand={play.hand}
             owner={play.name}
             isfromOwner={true}
             putReady={async ()=>{
-              const response = await axios.put('http://localhost:8081/game/putPlayerReady',{
+              await axios.put('http://localhost:8081/game/putPlayerReady',{
                 code,
                 id: player._id
               })
             }}
             newCard={async ()=>{
-              const response = await axios.put('http://localhost:8081/game/getCard',{
+              await axios.put('http://localhost:8081/game/getCard',{
                 code,
                 id: player._id
               })

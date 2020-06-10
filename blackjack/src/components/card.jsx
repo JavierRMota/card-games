@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     Card, CardImg,CardImgOverlay,
-    CardTitle, Button
+    CardTitle
   } from 'reactstrap';
 import pica from '../assets/pica.png'
 import diamante from '../assets/diamante.png'
@@ -38,7 +38,7 @@ const DeckCard = ({ number, hidden, owner, style}) => {
    
     return (
         <div onClick={() => owner && setHidden(!isHidden)} style={style}>
-            <Card className="text-black"  style={{ width: '17rem', height: 'auto',border: '.38rem solid black', borderRadius:'21px' }} despues de Card > 
+            <Card className="text-black"  style={{ width: '17rem', height: 'auto',border: '.38rem solid black', borderRadius:'21px' }} > 
                 <CardImg src={image} alt={`card ${VALUES[value]}`} style={{zIndex:0 }}/>
                 <CardImgOverlay>
                     <CardTitle ><h5>{isHidden ? '' :  VALUES[value]}</h5></CardTitle>
