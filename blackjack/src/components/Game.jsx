@@ -74,7 +74,6 @@ const Game = props => {
   }
 
   create_player_games()
-  console.log(players_games)
   //Carousel
 
   return (
