@@ -80,9 +80,11 @@ const calculateScores = async (blackjack) => {
     await blackjack.save();
 }
 
-const checkAllReady = async (blackjack) =>  {
-    const filtered = blackjack.players.filter(({ ready }) => ready == false );
-    return filtered.length == 0;
+const checkAllReady = (blackjack) =>  {
+    const filtered = blackjack.players.filter(({ ready }) => ready === false );
+    console.log(blackjack.players)
+    console.log(filtered)
+    return filtered.length === 0;
 }
 const getNewHand = async (blackjack) => {
     const cardOneIndex = Math.floor(Math.random() * blackjack.cards.length);
@@ -219,11 +221,14 @@ exports.putPlayerReady = async (req, res) => {
     try {
         const blackjack = await BlackJack.findById(code);
         const { index, player } = getPlayer(blackjack, id)
+        console.log(id)
         if (index === -1) {
             throw Error('Player does not exists')
         }
         player.ready = true
+        blackjack.players[index] = player
         await blackjack.save()
+
         if(checkAllReady(blackjack)){
            await makeHousePlay(blackjack)
         }

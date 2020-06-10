@@ -91,7 +91,6 @@ const Game = props => {
 
   create_player_games()
 
-
   return (
     <Fragment>
       <Container>
