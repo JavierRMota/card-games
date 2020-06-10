@@ -1,4 +1,4 @@
-import React, { useContext, useState, Fragment , useRef} from 'react'
+import React, {  Fragment , useRef} from 'react'
 import ModalForm from './Modal'
 import {
   CardLink,
@@ -21,8 +21,6 @@ const Home = () => {
   const handleClick = (type,title) => {
     ref.current.toggleModal()
     ref.current.changeType(type,title)
-
-
   }
   return (
     <Fragment>

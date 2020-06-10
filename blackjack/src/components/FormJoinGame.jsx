@@ -10,7 +10,7 @@ const FormJoinGame = () => {
   const [code, updateCode] = useState('')
 
   const joinGame = async () => {
-    //TODO
+    
     try {
       console.log('Creating game')
       const response = await axios.put('http://localhost:8081/game/addPlayer',{

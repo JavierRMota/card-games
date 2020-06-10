@@ -1,83 +1,171 @@
-import React from 'react'
-import { Row, Col, Button, Card, CardBody ,CardTitle, Container} from 'reactstrap'
+import React, { useEffect, useState } from 'react'
+import {
+  Row,
+  Col,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Container
+} from 'reactstrap'
 import CardDeck from './Card'
 
-const CardGame = ({ hand, isfromOwner=false, owner=null, isfromHouse=false, newCard, putReady }) => {
+const CardGame = ({
+  hand,
+  isfromOwner = false,
+  owner = null,
+  isfromHouse = false,
+  newCard,
+  putReady,
+  points
+}) => {
+  const [card_width, setWidth] = useState(300)
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      let width = window.innerWidth != null ? window.innerWidth : 500
+      setWidth(width)
+    })
+  })
   let player_cards = []
   var styles = []
-  let width = 275;
-  let height = 400;
+  let width = 275
+  let height = 400
 
   for (let index = 0; index < hand.length; index++) {
+    let top_value = (index * 40).toString() + 'px'
+    let left_value = (index * 40).toString() + 'px'
+    styles.push({
+      zIndex: index,
+      top: top_value,
+      left: left_value,
+      position: 'absolute'
+    })
 
-    let top_value = (index*40).toString()+'px';
-    let left_value = (index*40).toString()+'px';
-    styles.push({zIndex:index, top: top_value, left: left_value, position:'absolute'})
-
-    width = 275 +(index*40);
-    height = 400 +(index*40);
+    width = 275 + index * 40
+    height = 400 + index * 40
   }
 
   for (let index = 0; index < hand.length; index++) {
     player_cards.push(
-      <CardDeck number={hand[index]} owner={isfromOwner} hidden={index == 0} style={styles[index]}></CardDeck>
+      <CardDeck
+        number={hand[index]}
+        owner={isfromOwner}
+        hidden={index === 0}
+        style={styles[index]}
+        width={card_width}
+      ></CardDeck>
     )
   }
-  let headers;
-  let buttons;
+  let headers
+  let buttons
   if (isfromOwner) {
-    headers = (<Row>
-      <Col className='mx-auto text-center'>
-        <h3>Your Game</h3>
-      </Col>
-    </Row>)
+    headers = (
+      <Row>
+        <Col className='mx-auto text-center'>
+          <h3>Your Game</h3>
+        </Col>
+      </Row>
+    )
     buttons = (
       <Row>
         <Col className='mx-auto text-center'>
-          <Button color='primary' size="lg" block onClick={newCard}>New Card</Button>{' '}
-          <Button color='secondary' size="lg" block onClick={putReady}>Stand</Button>{' '}
+          <Button color='primary' size='lg' block onClick={newCard}>
+            New Card
+          </Button>{' '}
+          <Button color='secondary' size='lg' block onClick={putReady}>
+            Stand
+          </Button>{' '}
         </Col>
-        
       </Row>
-      
     )
-  } else if(isfromHouse) {
-    headers = (<Row>
-      <Col className='mx-auto text-center'>
-        <h3>House Game</h3>
-      </Col>
-    </Row>)
-    buttons = (<Row></Row>)
+  } else if (isfromHouse) {
+    headers = (
+      <Row>
+        <Col className='mx-auto text-center'>
+          <h3>House Game</h3>
+        </Col>
+      </Row>
+    )
+    buttons = <Row></Row>
   } else {
-    headers = (<Row>
-      <Col className='mx-auto text-center'>
-        <h3>{owner}</h3>
-      </Col>
-    </Row>)
+    headers = (
+      <Row>
+        <Col className='mx-auto text-center'>
+          <h3>{owner}</h3>
+        </Col>
+      </Row>
+    )
     buttons = (
       <Row>
-        <Col className='mx-auto text-center'><h4 className='text-light'><i>Another player game</i></h4></Col>
+        <Col className='mx-auto text-center'>
+          <h4 className='text-light'>
+            <i>Another player game</i>
+          </h4>
+        </Col>
       </Row>
     )
   }
 
-  let width_str = width.toString() +'px';
-  let heigth_str = height.toString() + 'px';
+  let width_str = width.toString() + 'px'
+  let heigth_str = height.toString() + 'px'
 
+  let card_deck
 
+  if (isfromHouse) {
+    card_deck = (
+      <Row
+        style={{ position: 'relative', width: width_str, height: heigth_str }}
+      >
+        <Col>
+          <Container> {player_cards}</Container>
+        </Col>
+      </Row>
+    )
+  } else {
+    card_deck = (
+      <div className='row d-flex justify-content-center'>
+        <div
+          className='col-md-4 d-flex'
+          style={{
+            position: 'relative',
+            width: width_str,
+            height: heigth_str
+          }}
+        >
+          <Container className='container-fluid'>{player_cards}</Container>
+        </div>
+      </div>
+    )
+  }
+
+  let inside_points
+
+  if (points != null) {
+    inside_points = (
+      <Row>
+        <Col style={{ textAlign: 'center' }}>
+          {' '}
+          <h4 ><span style={{color:'white'}} >Points: </span>{points}</h4>
+        </Col>
+      </Row>
+    )
+  }
   return (
-    <Card className='mx-auto' style={{backgroundColor:'ForestGreen', borderRadius:'21px' }}>
+    <Card
+      className='mx-auto'
+      style={{ backgroundColor: 'ForestGreen', borderRadius: '21px' }}
+    >
       <CardBody>
         <CardTitle>{headers}</CardTitle>
-        <Row style={{position: 'relative',  width:width_str, height:heigth_str}}>
-          <Col><Container> {player_cards}</Container></Col>
-        </Row>
-        
-        <br/>
+        {card_deck}
+        <br />
+        {inside_points}
+        <br />
         <Row>
-          <Col >{buttons}</Col>
+          <Col>{buttons}</Col>
         </Row>
-        <br/>
+        <br />
       </CardBody>
     </Card>
   )

@@ -1,13 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useRef} from 'react'
 import socketIOClient from 'socket.io-client'
 import { Container } from 'reactstrap'
 import CardGame from './CardGame'
+import ModalForm from './Modal'
+
 import {
-  Carousel,
-  CarouselItem,
-  CarouselControl,
-  CarouselIndicators,
-  CarouselCaption,
+
   Row,
   Col
 } from 'reactstrap'
@@ -19,14 +17,27 @@ const Game = props => {
   const [players, setPlayers] = useState(initPlayers)
   const [house, setHouse] = useState(initHouse)
   const [player, setPlayer] = useState(initPlayer)
+  const [game_state, setGameState] = useState()
+  const ref = useRef(null);
+
+  const handleScoresEvent = (type,title) => {
+    ref.current.toggleModal()
+    ref.current.changeType(type,title)
+  }
   useEffect(() => {
     const socket = socketIOClient('http://localhost:8082')
     socket.on('update', data => {
       setPlayers(data.players)
       setHouse(data.house)
-      console.log(data)
+      setGameState(data.state)
+      if(data.state!= null) {
+        if(data.state === 'SCORES'){
+          handleScoresEvent('show-scores', 'Scores')
+        }
+      }
+      console.log(game_state);
       players.forEach(play => {
-        if (play._id == player._id) {
+        if (play._id === player._id) {
           setPlayer(play)
         }
       });
@@ -35,7 +46,7 @@ const Game = props => {
       console.log('connected')
       socket.emit('connected', { code, player: player._id })
     })
-  }, [])
+  }, )
 
   const wins = player.wins;
   const looses = player.loses;
@@ -46,9 +57,10 @@ const Game = props => {
   const create_player_games = name => {
     for (const i in players) {
       const play = players[i]
-      if (play._id == player._id) {
+      if (play._id === player._id) {
         players_games.push(
           <CardGame
+            points={play.points}
             hand={play.hand}
             owner={play.name}
             isfromOwner={true}
@@ -69,6 +81,7 @@ const Game = props => {
       } else {
         players_games.push(
           <CardGame
+            points={play.points}
             hand={play.hand}
             owner={play.name}
             isfromOwner={false}
@@ -79,8 +92,7 @@ const Game = props => {
   }
 
   create_player_games()
-  console.log(players_games)
-  //Carousel
+
 
   return (
     <Fragment>
@@ -91,25 +103,30 @@ const Game = props => {
             <h2>GameCode: {code}</h2>
           </Col>
 
-          <Col className='text-right'>
-            <h3>Wins: <span className='text-success'>{wins}</span></h3>
-            <h3>Looses: <span className='text-danger'>{looses}</span></h3>
-          </Col>
+         
         </Row>
         <hr/>
         <Row>
-          <Col className='col-md-auto'>
+          <Col className='col-xs col-md-auto'>
           <CardGame
               hand={house.hand}
               isfromHouse={true}
             ></CardGame>
           </Col>
-          <Col className=' col-lg' > <CarouselGames player_games={players_games}></CarouselGames> </Col>
-    
+          <Col className='col-lg  d-none d-lg-block'  > <CarouselGames player_games={players_games}></CarouselGames> </Col>
         </Row>
+        <br/>
+        <Row>
+          
+          <Col className='col d-lg-none'  > <CarouselGames player_games={players_games}></CarouselGames> </Col>
+
+        </Row>
+        
         <br/>
         <hr/>
       </Container>
+      <ModalForm ref={ref} players={players} house={house}>
+      </ModalForm>
     </Fragment>
   )
 }

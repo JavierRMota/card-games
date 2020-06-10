@@ -53,6 +53,12 @@ class BlackJackSocket {
     update(blackjack) {
         const socketsToNotif = this.sockets.filter(({ code }) => code === blackjack._id);
         socketsToNotif.forEach(socket => {
+            console.log({
+                players: blackjack.players,
+                house: blackjack.house,
+                code: blackjack._id,
+                state: blackjack.state
+             })
             socket.emit('update',{
                 players: blackjack.players,
                 house: blackjack.house,
