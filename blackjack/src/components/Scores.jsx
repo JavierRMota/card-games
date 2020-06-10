@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap'
+import React from 'react'
+import { Button, Row, Col } from 'reactstrap'
 import { useHistory } from 'react-router-dom'
 
 const Scores = ({ players, house }) => {

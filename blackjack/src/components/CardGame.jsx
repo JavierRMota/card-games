@@ -49,6 +49,7 @@ const CardGame = ({
   for (let index = 0; index < hand.length; index++) {
     player_cards.push(
       <CardDeck
+        key={index}
         number={hand[index]}
         owner={isfromOwner}
         hidden={index === 0}
