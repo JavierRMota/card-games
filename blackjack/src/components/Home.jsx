@@ -2,7 +2,6 @@ import React, {  Fragment , useRef} from 'react'
 import ModalForm from './Modal'
 import {
   CardLink,
-  CardText,
   CardBody,
   CardTitle,
   Card,
@@ -63,7 +62,7 @@ const Home = () => {
             <CardTitle>
               <h3>Rules</h3>
             </CardTitle>
-            <CardText>
+            <div>
               <ul>
                 <li>
                   {' '}
@@ -131,14 +130,14 @@ const Home = () => {
                   quadrupling you bet.
                 </li>
               </ul>
-            </CardText>
-            <CardLink>
-              <a
-                href='https://en.wikipedia.org/wiki/Blackjack'
-                class='card-link float-right'
+            </div>
+            <CardLink href={'https://en.wikipedia.org/wiki/Blackjack'}>
+              <div
+                
+                className='card-link float-right'
               >
                 More information...
-              </a>
+              </div>
             </CardLink>
           </CardBody>
         </Card>

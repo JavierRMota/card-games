@@ -5,7 +5,6 @@ import CardGame from './CardGame'
 import ModalForm from './Modal'
 
 import {
-
   Row,
   Col
 } from 'reactstrap'
@@ -48,8 +47,7 @@ const Game = props => {
     })
   }, )
 
-  const wins = player.wins;
-  const looses = player.loses;
+
   
 
   const players_games = []
@@ -65,13 +63,13 @@ const Game = props => {
             owner={play.name}
             isfromOwner={true}
             putReady={async ()=>{
-              const response = await axios.put('http://localhost:8081/game/putPlayerReady',{
+              await axios.put('http://localhost:8081/game/putPlayerReady',{
                 code,
                 id: player._id
               })
             }}
             newCard={async ()=>{
-              const response = await axios.put('http://localhost:8081/game/getCard',{
+              await axios.put('http://localhost:8081/game/getCard',{
                 code,
                 id: player._id
               })
