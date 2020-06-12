@@ -146,6 +146,7 @@ exports.postCreateGame = async (req, res) => {
             blackjack.cards =  Array(52 * decks).fill().map((_, idx) => idx % 53)
         }
         let player = new Player(await getNewHand(blackjack), name)
+        player.points = getBestScore(player.hand)
         blackjack.players.push(player)
         const house = await createHouse(blackjack)
         blackjack.house = house
@@ -169,6 +170,7 @@ exports.putAddPlayer = async (req, res) => {
             }
         });
         let player = new Player(await getNewHand(blackjack), name)
+        player.points = getBestScore(player.hand)
         blackjack.players.push(player)
         await blackjack.save()
         player = blackjack.players[blackjack.players.length - 1]
